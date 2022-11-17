@@ -1,6 +1,8 @@
 import { DataSource } from "typeorm";
 import { DatabaseConfig } from "../config/database";
 
+import { User } from "../models/user.model";
+
 export type DatabaseClient = DataSource;
 
 export async function getDatabaseClient(
@@ -15,7 +17,7 @@ export async function getDatabaseClient(
     database: config.database,
     logging: config.logging,
 
-    entities: [],
+    entities: [User],
   });
 
   try {

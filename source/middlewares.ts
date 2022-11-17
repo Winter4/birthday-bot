@@ -1,13 +1,24 @@
-import { Bot, Context, NextFunction } from "grammy";
-import { AppClients } from "./clients/index";
-import { LoggerClient } from "./clients/logger";
+import type { NextFunction } from "grammy";
+import type { CustomContext } from "./types";
+import type { AppClients } from "./clients/index";
+import { User } from "./models/user.model";
 
-function useLogger(bot: Bot, logger: LoggerClient) {
-  bot.use((ctx: Context, next: NextFunction) => {
-    logger.info(ctx.update);
-  });
+function extendContext(clients: AppClients) {
+  return (ctx: CustomContext, next: NextFunction) => {
+    ctx.logger = clients.logger;
+    ctx.repos = {
+      user: clients.database.getRepository(User),
+    };
+
+    return next();
+  };
 }
 
-export function useMiddlewares(bot: Bot, clients: AppClients) {
-  useLogger(bot, clients.logger);
+function logUpdates(ctx: CustomContext, next: NextFunction) {
+  ctx.logger.info(ctx.update);
+  return next();
+}
+
+export function middlewares(clients: AppClients) {
+  return [extendContext(clients), logUpdates];
 }

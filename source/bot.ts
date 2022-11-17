@@ -2,11 +2,14 @@
 import "dotenv/config";
 // some API shim for typeORM proper working
 import "reflect-metadata";
-import { Bot, Context } from "grammy";
+import { Bot } from "grammy";
 
 import { getClients } from "./clients";
 import { getConfig } from "./config";
-import { useMiddlewares } from "./middlewares";
+
+import type { CustomContext } from "./types";
+import { middlewares } from "./middlewares";
+import { handleErrors } from "./error-handler";
 
 async function main() {
   // global app config
@@ -14,10 +17,16 @@ async function main() {
   // 3rd party clients, that should be inited
   const clients = await getClients(config);
 
-  const bot = new Bot(config.telegram.botToken);
+  // init bot instance
+  const bot = new Bot<CustomContext>(config.telegram.botToken);
 
-  useMiddlewares(bot, clients);
+  // apply pre-scenes middlewares
+  bot.use(...middlewares(clients));
 
+  // error handler
+  bot.catch(handleErrors(clients.logger));
+
+  // run the bot
   bot.start();
   clients.logger.info("Bot is ready to handle birthdays!🎂");
 }
