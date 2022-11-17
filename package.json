@@ -4,7 +4,7 @@
   "description": "A telegram bot for keeping birth days",
   "main": "index.js",
   "scripts": {
-    "dev": "npx nodemon source/index.ts",
+    "dev": "npx nodemon source/index.ts | pino-pretty",
     "dev:up": "docker compose -f environment/docker-compose.yml up -d",
     "dev:down": "docker compose -f environment/docker-compose.yml down"
   },
@@ -19,6 +19,8 @@
   "dependencies": {
     "dotenv": "^16.0.3",
     "pg": "^8.8.0",
+    "pino": "^8.7.0",
+    "pino-pretty": "^9.1.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.10"
   }

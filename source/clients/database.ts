@@ -1,10 +1,12 @@
 import { DataSource } from "typeorm";
 import { DatabaseConfig } from "../config/database";
 
-export async function connectDatabase(
+export type DatabaseClient = DataSource;
+
+export async function getDatabaseClient(
   config: DatabaseConfig
-): Promise<DataSource> {
-  const datasource = new DataSource({
+): Promise<DatabaseClient> {
+  const client = new DataSource({
     type: "postgres",
     host: config.host,
     port: config.port,
@@ -17,10 +19,10 @@ export async function connectDatabase(
   });
 
   try {
-    await datasource.initialize();
+    await client.initialize();
   } catch (error: unknown) {
     console.error(error);
   }
 
-  return datasource;
+  return client;
 }

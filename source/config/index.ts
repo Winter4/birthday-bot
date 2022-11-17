@@ -1,7 +1,6 @@
-import exp from "constants";
 import { getDatabaseConfig, DatabaseConfig } from "./database";
 
-type AppConfig = {
+export type AppConfig = {
   database: DatabaseConfig;
 };
 
