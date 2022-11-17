@@ -1,14 +1,11 @@
 import type { NextFunction } from "grammy";
 import type { CustomContext } from "./types";
 import type { AppClients } from "./clients/index";
-import { User } from "./models/user.model";
 
 function extendContext(clients: AppClients) {
   return (ctx: CustomContext, next: NextFunction) => {
     ctx.logger = clients.logger;
-    ctx.repos = {
-      user: clients.database.getRepository(User),
-    };
+    ctx.prisma = clients.database;
 
     return next();
   };
